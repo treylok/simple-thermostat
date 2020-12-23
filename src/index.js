@@ -31,7 +31,7 @@ const UPDATE_PROPS = [
   'modes',
 ]
 
-const MODE_TYPES = ['hvac', 'fan', 'preset', 'swing']
+const MODE_TYPES = ['hvac', 'fan', 'preset', 'swing', 'humidifier']
 
 // Sorted list of HVAC modes
 const HVAC_MODES = [
@@ -61,6 +61,7 @@ const MODE_ICONS = {
   heat_cool: 'hass:autorenew',
   heat: 'hass:fire',
   off: 'hass:power',
+  manual: 'hass:water-percent'
 }
 
 const STATE_ICONS = {
@@ -550,7 +551,7 @@ class SimpleThermostat extends LitElement {
       <div class="modes ${headings ? 'heading' : ''}">
         ${headings
           ? html`
-              <div class="mode-title">${title}</div>
+              <div class="mode-title">${title == 'ui.card.climate.humidifier_mode' ? "Humidifier Mode" : title}</div>
             `
           : null}
         ${list.map(
@@ -629,11 +630,20 @@ class SimpleThermostat extends LitElement {
 
   setMode(type, mode) {
     if (type && mode) {
-      this._hass.callService('climate', `set_${type}_mode`, {
-        entity_id: this.config.entity,
-        [`${type}_mode`]: mode,
-      })
-      this.fire('haptic', 'light')
+      if(type=='humidifier'){
+        this._hass.callService('ecobee', `set_${type}_mode`, {
+          entity_id: this.config.entity,
+          [`${type}_mode`]: mode,
+        })
+        this.fire('haptic', 'light')
+      }
+      else{
+        this._hass.callService('climate', `set_${type}_mode`, {
+          entity_id: this.config.entity,
+          [`${type}_mode`]: mode,
+        })
+        this.fire('haptic', 'light')
+      }
     } else {
       this.fire('haptic', 'failure')
     }
