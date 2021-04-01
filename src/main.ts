@@ -57,6 +57,7 @@ const MODE_ICONS: ModeIcons = {
   heat_cool: 'hass:autorenew',
   heat: 'hass:fire',
   off: 'hass:power',
+  manual: 'hass:water-percent',
 }
 
 const STATE_ICONS = {
@@ -517,10 +518,17 @@ export default class SimpleThermostat extends LitElement {
 
   setMode = (type: string, mode: string) => {
     if (type && mode) {
-      this._hass.callService('climate', `set_${type}_mode`, {
-        entity_id: this.config.entity,
-        [`${type}_mode`]: mode,
-      })
+      if (type == 'humidifier') {
+        this._hass.callService('ecobee', `set_${type}_mode`, {
+          entity_id: this.config.entity,
+          [`${type}_mode`]: mode,
+        })
+      } else {
+        this._hass.callService('climate', `set_${type}_mode`, {
+          entity_id: this.config.entity,
+          [`${type}_mode`]: mode,
+        })
+      }
       fireEvent(this, 'haptic', 'light')
     } else {
       fireEvent(this, 'haptic', 'failure')

@@ -43,7 +43,15 @@ export default function renderModeType({
 
   return html`
     <div class="modes ${headings ? 'heading' : ''}">
-      ${headings ? html` <div class="mode-title">${title}</div> ` : null}
+      ${headings
+        ? html`
+            <div class="mode-title">
+              ${title == 'ui.card.climate.humidifier_mode'
+                ? 'Humidifier Mode'
+                : title}
+            </div>
+          `
+        : null}
       ${list.map(
         ({ value, icon, name }) => html`
           <div

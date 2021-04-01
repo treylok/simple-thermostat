@@ -111,6 +111,7 @@ export enum MODES {
   FAN = 'fan',
   PRESET = 'preset',
   SWING = 'swing',
+  HUMIDIFIER = 'humidifier',
 }
 
 export enum HVAC_MODES {
